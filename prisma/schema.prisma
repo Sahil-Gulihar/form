@@ -13,11 +13,58 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Project {
+  id                      String   @id @default(cuid())
+  slNo                    String?
+  projectName             String
+  nodalDepartment         String?
+  division                String?
+  district                String?
+  lac                     String? // Legislative Assembly Constituency
+  fundSource              String?
+  aaNo                    String? // Administrative Approval Number
+  estimatedValue          String?
+  pmcWorkOrderDate        String?
+  worksWorkOrderDate      String?
+  consultantName          String?
+  contractorName          String?
+  physicalProgress        String?
+  financialProgress       String?
+  completionDatePerTender String?
+  expectedCompletionDate  String?
+  provisions              String?
+  landStatus              String?
+  remarks                 String?
+  branch                  String?
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+
+  // User relations
+  createdBy String // User ID who created the project
+  user      User   @relation(fields: [createdBy], references: [id])
+
+  @@index([projectName])
+  @@index([district, division])
+  @@index([createdBy])
+  @@map("projects")
+}
+
 model User {
   id        String   @id @default(cuid())
   email     String   @unique
   password  String
   name      String?
+  role      Role     @default(USER)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  // Relation to projects
+  projects Project[]
+
+  @@map("users")
+}
+
+enum Role {
+  USER
+  ADMIN
 }
