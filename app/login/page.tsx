@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { ApiError, UserData } from "../types/auth";
+import { ApiError } from "../types/auth";
 
-export default function Login() {
+// Create a separate component that uses useSearchParams
+function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -103,15 +104,26 @@ export default function Login() {
         <div className="mt-4 text-center">
           <p className="text-sm text-gray-600">
             Don't have an account?{" "}
-            <Link
-              href="/register"
-              className="text-blue-600 hover:text-blue-500"
-            >
-              Register here
-            </Link>
+            Contact us at our <a className="underline" href="mailto:support@innfraone.com"> email</a>
+          
           </p>
         </div>
       </div>
     </div>
+  );
+}
+
+// Main component with Suspense boundary
+export default function Login() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+          Loading...
+        </div>
+      }
+    >
+      <LoginForm />
+    </Suspense>
   );
 }
