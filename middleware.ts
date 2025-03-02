@@ -3,7 +3,7 @@ import { verifyToken } from "./lib/auth";
 
 export async function middleware(request: NextRequest) {
   // Skip middleware for login route
-  if (request.nextUrl.pathname === "/login" ) {
+  if (request.nextUrl.pathname === "/" ) {
     return NextResponse.next();
   }
 
@@ -16,7 +16,7 @@ export async function middleware(request: NextRequest) {
 
     // If no token or invalid token, redirect to login
     if (!token ) {
-      const loginUrl = new URL("/login", request.url);
+      const loginUrl = new URL("/", request.url);
       loginUrl.searchParams.set("callbackUrl", request.nextUrl.pathname);
       return NextResponse.redirect(loginUrl);
     }

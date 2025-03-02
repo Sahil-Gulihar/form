@@ -1,10 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ApiError } from "../types/auth";
-
 
 export default function Register() {
   const [email, setEmail] = useState("");
@@ -12,10 +11,26 @@ export default function Register() {
   const [name, setName] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isProduction, setIsProduction] = useState(false);
   const router = useRouter();
+
+  // Check if we're in production mode
+  useEffect(() => {
+    setIsProduction(process.env.NODE_ENV === "production");
+    if (process.env.NODE_ENV === "production") {
+      setError("Registration is disabled in production environment.");
+    }
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    // Prevent submission in production
+    if (isProduction) {
+      setError("Registration is disabled in production environment.");
+      return;
+    }
+
     setError("");
     setLoading(true);
 
@@ -61,6 +76,18 @@ export default function Register() {
           Create your account
         </h1>
 
+        {isProduction && (
+          <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded mb-4">
+            <strong>Warning:</strong> Registration is disabled in production
+            environment.
+            {process.env.NEXT_PUBLIC_ADMIN_CONTACT && (
+              <p className="mt-1">
+                Please contact the administrator for access.
+              </p>
+            )}
+          </div>
+        )}
+
         {error && (
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
             {error}
@@ -82,6 +109,7 @@ export default function Register() {
               value={name}
               onChange={(e) => setName(e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-md"
+              disabled={isProduction}
             />
           </div>
 
@@ -100,6 +128,7 @@ export default function Register() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-md"
+              disabled={isProduction}
             />
           </div>
 
@@ -118,13 +147,18 @@ export default function Register() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-md"
+              disabled={isProduction}
             />
           </div>
 
           <button
             type="submit"
-            disabled={loading}
-            className="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md"
+            disabled={loading || isProduction}
+            className={`w-full py-2 px-4 ${
+              isProduction
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-blue-600 hover:bg-blue-700"
+            } text-white font-medium rounded-md`}
           >
             {loading ? "Creating account..." : "Create account"}
           </button>
@@ -133,7 +167,7 @@ export default function Register() {
         <div className="mt-4 text-center">
           <p className="text-sm text-gray-600">
             Already have an account?{" "}
-            <Link href="/login" className="text-blue-600 hover:text-blue-500">
+            <Link href="/" className="text-blue-600 hover:text-blue-500">
               Sign in
             </Link>
           </p>

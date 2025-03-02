@@ -9,6 +9,14 @@ interface RegisterRequest {
 }
 
 export async function POST(request: NextRequest) {
+  // Check for development environment
+  if (process.env.NODE_ENV === "production") {
+    return NextResponse.json(
+      { error: "Registration is disabled in production" },
+      { status: 403 }
+    );
+  }
+
   const prisma = new PrismaClient();
 
   try {
