@@ -1,5 +1,4 @@
-// @ts-nocheck
-import { Project } from "@prisma/client";
+
 
 interface PaginationParams {
   page?: number;
@@ -10,7 +9,7 @@ interface PaginationParams {
 }
 
 interface PaginatedResponse {
-  projects: Project[];
+  projects: any[];
   pagination: {
     total: number;
     page: number;
@@ -48,7 +47,7 @@ export async function getProjects(
 }
 
 // Get a single project by ID
-export async function getProject(id: string): Promise<Project> {
+export async function getProject(id: string): Promise<any> {
   const response = await fetch(`/api/projects/${id}`, {
     method: "GET",
     headers: {
@@ -67,10 +66,10 @@ export async function getProject(id: string): Promise<Project> {
 // Create a new project
 export async function createProject(
   projectData: Omit<
-    Project,
+    any,
     "id" | "createdAt" | "updatedAt" | "createdBy" | "updatedBy"
   >
-): Promise<Project> {
+): Promise<any> {
   const response = await fetch("/api/projects", {
     method: "POST",
     headers: {
@@ -91,8 +90,8 @@ export async function createProject(
 // Update an existing project
 export async function updateProject(
   id: string,
-  projectData: Partial<Project>
-): Promise<Project> {
+  projectData: Partial<any>
+): Promise<any> {
   const response = await fetch(`/api/projects/${id}`, {
     method: "PUT",
     headers: {

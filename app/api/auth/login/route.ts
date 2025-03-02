@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+
 import { comparePassword, generateToken } from "@/lib/auth";
 import { cookies } from "next/headers";
+import { prisma } from "@/database/db";
 
 interface LoginRequest {
   email: string;
@@ -9,7 +10,7 @@ interface LoginRequest {
 }
 
 export async function POST(request: NextRequest) {
-  const prisma = new PrismaClient();
+
 
   try {
     const body: LoginRequest = await request.json();

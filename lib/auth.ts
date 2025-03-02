@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { User } from "@prisma/client";
+
 
 // Environment variables (set in .env.local)
 const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key"; // Use a strong secret in production
@@ -25,7 +25,7 @@ export async function comparePassword(
 }
 
 // Generate JWT token
-export function generateToken(user: User): string {
+export function generateToken(user: any): string {
   return jwt.sign(
     {
       id: user.id,

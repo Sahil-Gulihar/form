@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
 import { hashPassword } from "@/lib/auth";
+import { prisma } from "@/database/db";
 
 interface RegisterRequest {
   email: string;
@@ -17,7 +17,6 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const prisma = new PrismaClient();
 
   try {
     const body: RegisterRequest = await request.json();

@@ -1,9 +1,10 @@
 // app/api/projects/[id]/route.ts
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
-import { verifyToken } from "@/lib/auth";
 
-const prisma = new PrismaClient();
+import { verifyToken } from "@/lib/auth";
+import { prisma } from "@/database/db";
+
+
 
 // Get a single project by ID (with user access control)
 export async function GET(
