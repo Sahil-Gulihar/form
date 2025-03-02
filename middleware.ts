@@ -3,7 +3,7 @@ import { verifyToken } from "./lib/auth";
 
 export async function middleware(request: NextRequest) {
   // Skip middleware for login route
-  if (request.nextUrl.pathname === "/" ) {
+  if (request.nextUrl.pathname === "/" || request.nextUrl.pathname === "/register") {
     return NextResponse.next();
   }
 

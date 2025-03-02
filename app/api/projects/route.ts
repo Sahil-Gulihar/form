@@ -16,8 +16,7 @@ export async function GET(request: NextRequest) {
 
     // Verify token and extract user ID
     const user = verifyToken(token);
-    if (!user ) {
-
+    if (!user) {
       return NextResponse.json(
         { error: "Invalid authentication token" },
         { status: 401 }
@@ -58,7 +57,7 @@ export async function GET(request: NextRequest) {
     // Get projects with pagination
     const projects = await prisma.project.findMany({
       where: filter,
-      orderBy: { createdAt: "desc" },
+      orderBy: { slNo: "asc" },
       skip: (page - 1) * limit,
       take: limit,
     });
@@ -112,7 +111,6 @@ export async function POST(request: NextRequest) {
     // Create new project in database with user ID
     const project = await prisma.project.create({
       data: {
-        slNo: data.slNo,
         projectName: data.projectName,
         nodalDepartment: data.nodalDepartment,
         division: data.division,

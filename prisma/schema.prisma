@@ -15,7 +15,7 @@ datasource db {
 
 model Project {
   id                      String   @id @default(cuid())
-  slNo                    String?
+  slNo                    Int?   @default(autoincrement())
   projectName             String
   nodalDepartment         String?
   division                String?
