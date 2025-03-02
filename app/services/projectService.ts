@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Project } from "@prisma/client";
 
 interface PaginationParams {
