@@ -129,7 +129,7 @@ const ProjectForm = () => {
   const [paginationData, setPaginationData] = useState({
     total: 0,
     page: 1,
-    limit: 2,
+    limit: 10,
     pages: 0,
   });
   const [filters, setFilters] = useState({
