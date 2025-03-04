@@ -2,35 +2,49 @@ import { NextRequest, NextResponse } from "next/server";
 import { verifyToken } from "./lib/auth";
 
 export async function middleware(request: NextRequest) {
-  // Skip middleware for login route
   const token = request.cookies.get("auth_token")?.value;
-  if (request.nextUrl.pathname === "/" || request.nextUrl.pathname === "/register") {
+  const pathname = request.nextUrl.pathname;
+
+  // Define public routes that don't require authentication
+  const publicRoutes = ["/", "/register"];
+  
+  // Handle public routes
+  if (publicRoutes.includes(pathname)) {
     if (token) {
-      return NextResponse.redirect("/dashboard");
+      try {
+        // Verify token validity before redirecting
+        await verifyToken(token);
+        return NextResponse.redirect(new URL("/dashboard", request.url));
+      } catch (error) {
+        // If token is invalid, proceed to public route
+        return NextResponse.next();
+      }
     }
     return NextResponse.next();
   }
 
-
-  // All other routes require authentication
-  const isAuthRequired = true;
-  if (isAuthRequired) {
-    // Get the token from the cookies using the proper Next.js middleware method
-
-    // If no token or invalid token, redirect to login
-    if (!token ) {
-      const loginUrl = new URL("/", request.url);
-      loginUrl.searchParams.set("callbackUrl", request.nextUrl.pathname);
-      return NextResponse.redirect(loginUrl);
-    }
+  // Handle protected routes
+  if (!token) {
+    const loginUrl = new URL("/", request.url);
+    loginUrl.searchParams.set("callbackUrl", pathname);
+    return NextResponse.redirect(loginUrl);
   }
 
-  return NextResponse.next();
+  try {
+    // Verify the token for protected routes
+    await verifyToken(token);
+    return NextResponse.next();
+  } catch (error) {
+    // If token verification fails, redirect to login
+    const loginUrl = new URL("/", request.url);
+    loginUrl.searchParams.set("callbackUrl", pathname);
+    return NextResponse.redirect(loginUrl);
+  }
 }
 
 export const config = {
   matcher: [
-    // Apply to all routes - middleware will handle excluding the login route
+    // Apply to all routes except specified exclusions
     "/((?!api/auth|_next|_vercel|favicon.ico|public).*)",
   ],
 };
