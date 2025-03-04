@@ -1409,21 +1409,28 @@ const ProjectForm = () => {
                     </Button>
                   )}
 
-                  <Button
-                    type="button"
-                    onClick={generateExcel}
-                    disabled={projects.length === 0 || isLoading}
-                    variant={projects.length === 0 ? "outline" : "secondary"}
-                    size="lg"
-                    className={projects.length === 0 ? "opacity-50" : ""}
-                  >
-                    <Download className="mr-2 h-5 w-5" /> Export to CSV
-                    {projects.length > 0 && (
-                      <Badge className="ml-2 bg-blue-200 text-blue-800">
-                        {projects.length}
-                      </Badge>
-                    )}
-                  </Button>
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button type="button" variant="secondary" size="lg">
+                        <Download className="mr-2 h-5 w-5" /> Export to CSV
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-[425px]">
+                      <DialogHeader>
+                        <DialogTitle>Export Feature</DialogTitle>
+                        <DialogDescription>
+                          The export to CSV feature is currently available on
+                          request. Please contact support to enable this
+                          functionality.
+                        </DialogDescription>
+                      </DialogHeader>
+                      <DialogFooter className="mt-4">
+                        <DialogClose asChild>
+                          <Button variant="outline">Close</Button>
+                        </DialogClose>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
                 </div>
               </form>
             </CardContent>
@@ -1460,21 +1467,34 @@ const ProjectForm = () => {
                     />{" "}
                     Refresh
                   </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={generateExcel}
-                    disabled={projects.length === 0 || isLoading}
-                    className="bg-gradient-to-r from-green-50 to-green-100 text-green-700 border-green-200 hover:bg-green-100 shadow-sm hover:shadow transition-all"
-                  >
-                    <Download className="mr-1 h-4 w-4" /> Export CSV
-                  </Button>
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button type="button" variant="secondary" size="lg">
+                        <Download className="mr-2 h-5 w-5" /> Export to CSV
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-[425px]">
+                      <DialogHeader>
+                        <DialogTitle>Export Feature</DialogTitle>
+                        <DialogDescription>
+                          The export to CSV feature is currently available on
+                          request. Please contact support to enable this
+                          functionality.
+                        </DialogDescription>
+                      </DialogHeader>
+                      <DialogFooter className="mt-4">
+                        <DialogClose asChild>
+                          <Button variant="outline">Close</Button>
+                        </DialogClose>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
                 </div>
               </div>
             </CardHeader>
             <CardContent>
               {/* Search and Filters */}
-              <div className="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+              {/* <div className="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
                 <h3 className="text-sm font-semibold mb-3 text-gray-700">
                   Filters
                 </h3>
@@ -1561,7 +1581,7 @@ const ProjectForm = () => {
                     Apply Filters
                   </Button>
                 </div>
-              </div>
+              </div> */}
 
               {projects.length > 0 ? (
                 <>

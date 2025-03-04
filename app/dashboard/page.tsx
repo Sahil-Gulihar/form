@@ -1,5 +1,6 @@
+import ProjectForm from '@/components/projectForm'
 import React from 'react'
-import ProjectForm from '../components/form/projectForm'
+
 
 function page() {
   return (
