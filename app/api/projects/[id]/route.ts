@@ -47,7 +47,11 @@ export async function GET(
     // If not admin and not the project creator, deny access
     
 
-    return NextResponse.json(project);
+    return NextResponse.json({
+      success: true,
+      userData,
+      project,
+    });
   } catch (error) {
     console.error("Error fetching project:", error);
     return NextResponse.json(

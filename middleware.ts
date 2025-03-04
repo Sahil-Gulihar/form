@@ -3,16 +3,19 @@ import { verifyToken } from "./lib/auth";
 
 export async function middleware(request: NextRequest) {
   // Skip middleware for login route
+  const token = request.cookies.get("auth_token")?.value;
   if (request.nextUrl.pathname === "/" || request.nextUrl.pathname === "/register") {
+    if (token) {
+      return NextResponse.redirect("/dashboard");
+    }
     return NextResponse.next();
   }
 
+
   // All other routes require authentication
   const isAuthRequired = true;
-
   if (isAuthRequired) {
     // Get the token from the cookies using the proper Next.js middleware method
-    const token = request.cookies.get("auth_token")?.value;
 
     // If no token or invalid token, redirect to login
     if (!token ) {

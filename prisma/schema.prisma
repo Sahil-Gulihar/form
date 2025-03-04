@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -15,14 +9,14 @@ datasource db {
 
 model Project {
   id                      String   @id @default(cuid())
-  slNo                    Int?   @default(autoincrement())
+  slNo                    Int      @default(autoincrement())
   projectName             String
   nodalDepartment         String?
   division                String?
   district                String?
-  lac                     String? // Legislative Assembly Constituency
+  lac                     String?
   fundSource              String?
-  aaNo                    String? // Administrative Approval Number
+  aaNo                    String?
   estimatedValue          String?
   pmcWorkOrderDate        String?
   worksWorkOrderDate      String?
@@ -38,10 +32,8 @@ model Project {
   branch                  String?
   createdAt               DateTime @default(now())
   updatedAt               DateTime @updatedAt
-
-  // User relations
-  createdBy String // User ID who created the project
-  user      User   @relation(fields: [createdBy], references: [id])
+  createdBy               String
+  user                    User     @relation(fields: [createdBy], references: [id])
 
   @@index([projectName])
   @@index([district, division])
@@ -50,16 +42,14 @@ model Project {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
+  id        String    @id @default(cuid())
+  email     String    @unique
   password  String
   name      String?
-  role      Role     @default(USER)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  // Relation to projects
-  projects Project[]
+  role      Role      @default(USER)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  projects  Project[]
 
   @@map("users")
 }

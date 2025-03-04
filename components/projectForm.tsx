@@ -60,6 +60,7 @@ import {
   Eye,
   Edit,
   RefreshCw,
+  LogOut,
 } from "lucide-react";
 import {
   Dialog,
@@ -81,8 +82,10 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 import { Badge } from "@/components/ui/badge";
+import { useRouter } from "next/navigation";
 
 const ProjectForm = () => {
+  const router = useRouter();
   const initialFormData = {
     slNo: "",
     projectName: "",
@@ -122,10 +125,11 @@ const ProjectForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [currentProjectId, setCurrentProjectId] = useState(null);
+  const [userName, setUserName] = useState<string>("");
   const [paginationData, setPaginationData] = useState({
     total: 0,
     page: 1,
-    limit: 10,
+    limit: 2,
     pages: 0,
   });
   const [filters, setFilters] = useState({
@@ -165,6 +169,7 @@ const ProjectForm = () => {
 
       const data = await response.json();
       setProjects(data.projects);
+      setUserName(data.userData.email);
       setPaginationData(data.pagination);
     } catch (error) {
       setErrorMessage(error.message || "Error fetching projects");
@@ -800,6 +805,23 @@ const ProjectForm = () => {
     }
   };
 
+  const LogOutUser = async () => {
+    try {
+      const req = await fetch("/api/logout", {
+        method: "GET",
+      });
+      if (req.ok) {
+        alert("Logout Successful");
+        window.location.reload()
+      }
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error(error);
+        alert(error.message || "Error logging out");
+      }
+    }
+  };
+
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-gray-50">
       {/* Loading overlay */}
@@ -1068,12 +1090,19 @@ const ProjectForm = () => {
       </div>
 
       {/* Main content */}
+
       <div
         className={`flex-1 p-4 md:p-6 overflow-auto ${
           sidebarVisible && windowWidth < 768 ? "opacity-50" : ""
         }`}
       >
         <div className="max-w-6xl mx-auto space-y-8">
+          <div className="flex flex-end items-center justify-end px-4 gap-2">
+            <h1>{userName || "N/A"}</h1>
+            <Button variant={"destructive"} onClick={LogOutUser}>
+              <LogOut size={12} />
+            </Button>
+          </div>
           <Card className="shadow-lg border-0 overflow-hidden">
             <div
               className={`h-2.5 ${
@@ -1275,24 +1304,6 @@ const ProjectForm = () => {
                                     name={field.name}
                                     value={formData[field.name] || ""}
                                     options={lacs}
-                                    onValueChange={handleChange}
-                                    required={field.required}
-                                    error={formErrors[field.name]}
-                                  />
-                                ) : field.name === "consultantName" ? (
-                                  <SearchableSelect
-                                    name={field.name}
-                                    value={formData[field.name] || ""}
-                                    options={consultants}
-                                    onValueChange={handleChange}
-                                    required={field.required}
-                                    error={formErrors[field.name]}
-                                  />
-                                ) : field.name === "contractorName" ? (
-                                  <SearchableSelect
-                                    name={field.name}
-                                    value={formData[field.name] || ""}
-                                    options={contractors}
                                     onValueChange={handleChange}
                                     required={field.required}
                                     error={formErrors[field.name]}
@@ -1665,8 +1676,8 @@ const ProjectForm = () => {
 
                   {/* Pagination */}
                   {paginationData.pages > 1 && (
-                    <div className="flex items-center justify-between border-t border-gray-200 px-4 py-3 sm:px-6 mt-4">
-                      <div className="flex flex-1 justify-between sm:hidden">
+                    <div className="flex items-center gap-2 justify-between border-t border-gray-200 px-4 py-3 sm:px-6 mt-4">
+                      <div className="flex flex-1 gap-3 justify-between sm:hidden">
                         <Button
                           variant="outline"
                           size="sm"

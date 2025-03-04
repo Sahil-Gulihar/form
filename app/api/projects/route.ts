@@ -32,10 +32,9 @@ export async function GET(request: NextRequest) {
     const projectName = searchParams.get("projectName");
 
     // Build filter object - only return projects created by this user
-    // Admins can see all projects if needed
     const userData = await prisma.user.findUnique({
       where: { id: user.id },
-      select: { role: true },
+      select: { role: true, name: true, email: true },
     });
 
     const filter: any = {};
@@ -54,15 +53,21 @@ export async function GET(request: NextRequest) {
     // Get total count for pagination
     const total = await prisma.project.count({ where: filter });
 
-    // Get projects with pagination
+    // Get projects with creator details
     const projects = await prisma.project.findMany({
       where: filter,
       orderBy: { slNo: "asc" },
       skip: (page - 1) * limit,
       take: limit,
+      include: {
+        user: {
+          select: { name: true, email: true }, // Include creator's name and email
+        },
+      },
     });
 
     return NextResponse.json({
+      userData,
       projects,
       pagination: {
         total,
@@ -79,6 +84,7 @@ export async function GET(request: NextRequest) {
     );
   }
 }
+
 
 export async function POST(request: NextRequest) {
   try {
