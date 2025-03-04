@@ -13,6 +13,13 @@ import {
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 interface Project {
   id: string;
@@ -20,6 +27,27 @@ interface Project {
   district: string;
   division: string;
   user: { name: string; email: string };
+  // Add other fields from your data
+  slNo?: number;
+  nodalDepartment?: string;
+  lac?: string;
+  fundSource?: string;
+  aaNo?: string;
+  estimatedValue?: string;
+  pmcWorkOrderDate?: string;
+  worksWorkOrderDate?: string;
+  consultantName?: string;
+  contractorName?: string;
+  physicalProgress?: string;
+  financialProgress?: string;
+  completionDatePerTender?: string;
+  expectedCompletionDate?: string;
+  provisions?: string;
+  landStatus?: string;
+  remarks?: string;
+  branch?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export default function ProjectTable() {
@@ -28,6 +56,7 @@ export default function ProjectTable() {
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
   const [userEmail, setUserEmail] = useState<string>("");
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const router = useRouter();
 
   const limit = 10;
@@ -36,7 +65,7 @@ export default function ProjectTable() {
     async function fetchProjects() {
       setLoading(true);
       try {
-        const res = await fetch(`/api/projects?page=${page}&limit=${limit}`);
+        const res = await fetch(`/api/projects/allProject?page=${page}&limit=${limit}&&allProjects=true`);
         const data = await res.json();
         if (res.ok) {
           setProjects(data.projects);
@@ -83,6 +112,7 @@ export default function ProjectTable() {
                       <TableHead className="w-1/4">District</TableHead>
                       <TableHead className="w-1/4">Division</TableHead>
                       <TableHead className="w-1/4">Created By</TableHead>
+                      <TableHead className="w-1/6">Actions</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -106,11 +136,129 @@ export default function ProjectTable() {
                         </TableCell>
                         <TableCell>
                           <div className="flex flex-col">
-                            <span>{project.user.name}</span>
+                            <span>{project?.user?.name || "N/A"}</span>
                             <span className="text-sm text-muted-foreground">
-                              {project.user.email}
+                              {project?.user?.email || "N/A"}
                             </span>
                           </div>
+                        </TableCell>
+                        <TableCell>
+                          <Dialog>
+                            <DialogTrigger asChild>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => setSelectedProject(project)}
+                              >
+                                View Details
+                              </Button>
+                            </DialogTrigger>
+                            <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+                              <DialogHeader>
+                                <DialogTitle>Project Details</DialogTitle>
+                              </DialogHeader>
+                              {selectedProject && (
+                                <div className="grid grid-cols-2 gap-4 mt-4">
+                                  <div>
+                                    <p className="font-semibold">Project Name:</p>
+                                    <p>{selectedProject.projectName}</p>
+                                  </div>
+                                  <div>
+                                    <p className="font-semibold">District:</p>
+                                    <p>{selectedProject.district || "N/A"}</p>
+                                  </div>
+                                  <div>
+                                    <p className="font-semibold">Division:</p>
+                                    <p>{selectedProject.division || "N/A"}</p>
+                                  </div>
+                                  <div>
+                                    <p className="font-semibold">Created By:</p>
+                                    <p>{selectedProject?.user?.name} ({selectedProject?.user?.email})</p>
+                                  </div>
+                                  <div>
+                                    <p className="font-semibold">Serial No:</p>
+                                    <p>{selectedProject.slNo || "N/A"}</p>
+                                  </div>
+                                  <div>
+                                    <p className="font-semibold">Nodal Department:</p>
+                                    <p>{selectedProject.nodalDepartment || "N/A"}</p>
+                                  </div>
+                                  <div>
+                                    <p className="font-semibold">LAC:</p>
+                                    <p>{selectedProject.lac || "N/A"}</p>
+                                  </div>
+                                  <div>
+                                    <p className="font-semibold">Fund Source:</p>
+                                    <p>{selectedProject.fundSource || "N/A"}</p>
+                                  </div>
+                                  <div>
+                                    <p className="font-semibold">AA No:</p>
+                                    <p>{selectedProject.aaNo || "N/A"}</p>
+                                  </div>
+                                  <div>
+                                    <p className="font-semibold">Estimated Value:</p>
+                                    <p>{selectedProject.estimatedValue || "N/A"}</p>
+                                  </div>
+                                  <div>
+                                    <p className="font-semibold">PMC Work Order Date:</p>
+                                    <p>{selectedProject.pmcWorkOrderDate || "N/A"}</p>
+                                  </div>
+                                  <div>
+                                    <p className="font-semibold">Works Work Order Date:</p>
+                                    <p>{selectedProject.worksWorkOrderDate || "N/A"}</p>
+                                  </div>
+                                  <div>
+                                    <p className="font-semibold">Consultant Name:</p>
+                                    <p>{selectedProject.consultantName || "N/A"}</p>
+                                  </div>
+                                  <div>
+                                    <p className="font-semibold">Contractor Name:</p>
+                                    <p>{selectedProject.contractorName || "N/A"}</p>
+                                  </div>
+                                  <div>
+                                    <p className="font-semibold">Physical Progress:</p>
+                                    <p>{selectedProject.physicalProgress || "N/A"}</p>
+                                  </div>
+                                  <div>
+                                    <p className="font-semibold">Financial Progress:</p>
+                                    <p>{selectedProject.financialProgress || "N/A"}</p>
+                                  </div>
+                                  <div>
+                                    <p className="font-semibold">Completion Date (Tender):</p>
+                                    <p>{selectedProject.completionDatePerTender || "N/A"}</p>
+                                  </div>
+                                  <div>
+                                    <p className="font-semibold">Expected Completion:</p>
+                                    <p>{selectedProject.expectedCompletionDate || "N/A"}</p>
+                                  </div>
+                                  <div>
+                                    <p className="font-semibold">Provisions:</p>
+                                    <p>{selectedProject.provisions || "N/A"}</p>
+                                  </div>
+                                  <div>
+                                    <p className="font-semibold">Land Status:</p>
+                                    <p>{selectedProject.landStatus || "N/A"}</p>
+                                  </div>
+                                  <div>
+                                    <p className="font-semibold">Remarks:</p>
+                                    <p>{selectedProject.remarks || "N/A"}</p>
+                                  </div>
+                                  <div>
+                                    <p className="font-semibold">Branch:</p>
+                                    <p>{selectedProject.branch || "N/A"}</p>
+                                  </div>
+                                  <div>
+                                    <p className="font-semibold">Created At:</p>
+                                    <p>{selectedProject.createdAt || "N/A"}</p>
+                                  </div>
+                                  <div>
+                                    <p className="font-semibold">Updated At:</p>
+                                    <p>{selectedProject.updatedAt || "N/A"}</p>
+                                  </div>
+                                </div>
+                              )}
+                            </DialogContent>
+                          </Dialog>
                         </TableCell>
                       </TableRow>
                     ))}
@@ -118,7 +266,6 @@ export default function ProjectTable() {
                 </Table>
               </div>
 
-              {/* Pagination */}
               {totalPages > 1 && (
                 <div className="flex items-center justify-between mt-6 gap-4">
                   <Button
