@@ -35,8 +35,9 @@ export default function RootLayout({
           className="fixed flex right-4 bottom-4"
         >
           Powered by{" "}
-          <div className="underline pl-1 pt-1">
-            <Image src="/logo.png" width={80} height={25} alt="Navdyut_AI" />
+          <div className="underline pl-1 pt">
+            Navdyut AI
+            {/* <Image src="/logo.png" width={80} height={25} alt="Navdyut_AI" /> */}
           </div>
         </a>
       </body>
