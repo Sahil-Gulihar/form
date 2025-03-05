@@ -104,8 +104,8 @@ export default function ProjectTable() {
 
   return (
     <>
-      <div className="flex flex-col justify-end items-end px-16 pt-2">
-        {userEmail || "N/A"}
+      <div className="flex flex-end items-center justify-end p-4 gap-2">
+        <h1>{userEmail || "N/A"}</h1>
         <Button variant={"destructive"} onClick={LogOutUser}>
           <LogOut size={12} />
         </Button>
