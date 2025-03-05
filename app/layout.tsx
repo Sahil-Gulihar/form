@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import Image from "next/image";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -28,7 +29,16 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <div className="">{children}</div>
+        <a
+          href="https://chat.navdyut.com"
+          className="fixed flex right-4 bottom-4"
+        >
+          Powered by{" "}
+          <div className="underline pl-1 pt-1">
+            <Image src="/logo.png" width={80} height={25} alt="Navdyut_AI" />
+          </div>
+        </a>
       </body>
     </html>
   );

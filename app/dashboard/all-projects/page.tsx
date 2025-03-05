@@ -20,6 +20,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { LogOut } from "lucide-react";
 
 interface Project {
   id: string;
@@ -58,6 +59,22 @@ export default function ProjectTable() {
   const [userEmail, setUserEmail] = useState<string>("");
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const router = useRouter();
+  const LogOutUser = async () => {
+    try {
+      const req = await fetch("/api/logout", {
+        method: "GET",
+      });
+      if (req.ok) {
+        alert("Logout Successful");
+        window.location.reload();
+      }
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error(error);
+        alert(error.message || "Error logging out");
+      }
+    }
+  };
 
   const limit = 10;
 
@@ -65,7 +82,9 @@ export default function ProjectTable() {
     async function fetchProjects() {
       setLoading(true);
       try {
-        const res = await fetch(`/api/projects/allProject?page=${page}&limit=${limit}&&allProjects=true`);
+        const res = await fetch(
+          `/api/projects/allProject?page=${page}&limit=${limit}&&allProjects=true`
+        );
         const data = await res.json();
         if (res.ok) {
           setProjects(data.projects);
@@ -85,7 +104,12 @@ export default function ProjectTable() {
 
   return (
     <>
-      <div className="flex justify-end items-end px-16 pt-2">{userEmail || "N/A"}</div>
+      <div className="flex flex-col justify-end items-end px-16 pt-2">
+        {userEmail || "N/A"}
+        <Button variant={"destructive"} onClick={LogOutUser}>
+          <LogOut size={12} />
+        </Button>
+      </div>
       <Card className="w-full max-w-[90%] mt-6 mx-auto">
         <CardHeader>
           <CardTitle className="text-2xl font-bold">Project List</CardTitle>
@@ -160,7 +184,9 @@ export default function ProjectTable() {
                               {selectedProject && (
                                 <div className="grid grid-cols-2 gap-4 mt-4">
                                   <div>
-                                    <p className="font-semibold">Project Name:</p>
+                                    <p className="font-semibold">
+                                      Project Name:
+                                    </p>
                                     <p>{selectedProject.projectName}</p>
                                   </div>
                                   <div>
@@ -173,22 +199,31 @@ export default function ProjectTable() {
                                   </div>
                                   <div>
                                     <p className="font-semibold">Created By:</p>
-                                    <p>{selectedProject?.user?.name} ({selectedProject?.user?.email})</p>
+                                    <p>
+                                      {selectedProject?.user?.name} (
+                                      {selectedProject?.user?.email})
+                                    </p>
                                   </div>
                                   <div>
                                     <p className="font-semibold">Serial No:</p>
                                     <p>{selectedProject.slNo || "N/A"}</p>
                                   </div>
                                   <div>
-                                    <p className="font-semibold">Nodal Department:</p>
-                                    <p>{selectedProject.nodalDepartment || "N/A"}</p>
+                                    <p className="font-semibold">
+                                      Nodal Department:
+                                    </p>
+                                    <p>
+                                      {selectedProject.nodalDepartment || "N/A"}
+                                    </p>
                                   </div>
                                   <div>
                                     <p className="font-semibold">LAC:</p>
                                     <p>{selectedProject.lac || "N/A"}</p>
                                   </div>
                                   <div>
-                                    <p className="font-semibold">Fund Source:</p>
+                                    <p className="font-semibold">
+                                      Fund Source:
+                                    </p>
                                     <p>{selectedProject.fundSource || "N/A"}</p>
                                   </div>
                                   <div>
@@ -196,47 +231,91 @@ export default function ProjectTable() {
                                     <p>{selectedProject.aaNo || "N/A"}</p>
                                   </div>
                                   <div>
-                                    <p className="font-semibold">Estimated Value:</p>
-                                    <p>{selectedProject.estimatedValue || "N/A"}</p>
+                                    <p className="font-semibold">
+                                      Estimated Value:
+                                    </p>
+                                    <p>
+                                      {selectedProject.estimatedValue || "N/A"}
+                                    </p>
                                   </div>
                                   <div>
-                                    <p className="font-semibold">PMC Work Order Date:</p>
-                                    <p>{selectedProject.pmcWorkOrderDate || "N/A"}</p>
+                                    <p className="font-semibold">
+                                      PMC Work Order Date:
+                                    </p>
+                                    <p>
+                                      {selectedProject.pmcWorkOrderDate ||
+                                        "N/A"}
+                                    </p>
                                   </div>
                                   <div>
-                                    <p className="font-semibold">Works Work Order Date:</p>
-                                    <p>{selectedProject.worksWorkOrderDate || "N/A"}</p>
+                                    <p className="font-semibold">
+                                      Works Work Order Date:
+                                    </p>
+                                    <p>
+                                      {selectedProject.worksWorkOrderDate ||
+                                        "N/A"}
+                                    </p>
                                   </div>
                                   <div>
-                                    <p className="font-semibold">Consultant Name:</p>
-                                    <p>{selectedProject.consultantName || "N/A"}</p>
+                                    <p className="font-semibold">
+                                      Consultant Name:
+                                    </p>
+                                    <p>
+                                      {selectedProject.consultantName || "N/A"}
+                                    </p>
                                   </div>
                                   <div>
-                                    <p className="font-semibold">Contractor Name:</p>
-                                    <p>{selectedProject.contractorName || "N/A"}</p>
+                                    <p className="font-semibold">
+                                      Contractor Name:
+                                    </p>
+                                    <p>
+                                      {selectedProject.contractorName || "N/A"}
+                                    </p>
                                   </div>
                                   <div>
-                                    <p className="font-semibold">Physical Progress:</p>
-                                    <p>{selectedProject.physicalProgress || "N/A"}</p>
+                                    <p className="font-semibold">
+                                      Physical Progress:
+                                    </p>
+                                    <p>
+                                      {selectedProject.physicalProgress ||
+                                        "N/A"}
+                                    </p>
                                   </div>
                                   <div>
-                                    <p className="font-semibold">Financial Progress:</p>
-                                    <p>{selectedProject.financialProgress || "N/A"}</p>
+                                    <p className="font-semibold">
+                                      Financial Progress:
+                                    </p>
+                                    <p>
+                                      {selectedProject.financialProgress ||
+                                        "N/A"}
+                                    </p>
                                   </div>
                                   <div>
-                                    <p className="font-semibold">Completion Date (Tender):</p>
-                                    <p>{selectedProject.completionDatePerTender || "N/A"}</p>
+                                    <p className="font-semibold">
+                                      Completion Date (Tender):
+                                    </p>
+                                    <p>
+                                      {selectedProject.completionDatePerTender ||
+                                        "N/A"}
+                                    </p>
                                   </div>
                                   <div>
-                                    <p className="font-semibold">Expected Completion:</p>
-                                    <p>{selectedProject.expectedCompletionDate || "N/A"}</p>
+                                    <p className="font-semibold">
+                                      Expected Completion:
+                                    </p>
+                                    <p>
+                                      {selectedProject.expectedCompletionDate ||
+                                        "N/A"}
+                                    </p>
                                   </div>
                                   <div>
                                     <p className="font-semibold">Provisions:</p>
                                     <p>{selectedProject.provisions || "N/A"}</p>
                                   </div>
                                   <div>
-                                    <p className="font-semibold">Land Status:</p>
+                                    <p className="font-semibold">
+                                      Land Status:
+                                    </p>
                                     <p>{selectedProject.landStatus || "N/A"}</p>
                                   </div>
                                   <div>
