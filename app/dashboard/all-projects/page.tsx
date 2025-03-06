@@ -311,8 +311,15 @@ export default function ProjectTable() {
                                       Expected Completion:
                                     </p>
                                     <p>
-                                      {selectedProject.expectedCompletionDate ||
-                                        "N/A"}
+                                      {selectedProject.expectedCompletionDate
+                                        ? new Date(
+                                            selectedProject.expectedCompletionDate
+                                          ).toLocaleDateString("en-US", {
+                                            day: "2-digit",
+                                            month: "long",
+                                            year: "numeric",
+                                          })
+                                        : "N/A"}
                                     </p>
                                   </div>
                                   <div>
