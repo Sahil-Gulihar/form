@@ -252,8 +252,15 @@ export default function ProjectTable() {
                                       Works Work Order Date:
                                     </p>
                                     <p>
-                                      {selectedProject.worksWorkOrderDate ||
-                                        "N/A"}
+                                      {selectedProject.worksWorkOrderDate
+                                        ? new Date(
+                                            selectedProject.worksWorkOrderDate
+                                          ).toLocaleDateString("en-US", {
+                                            day: "2-digit",
+                                            month: "long",
+                                            year: "numeric",
+                                          })
+                                        : "N/A"}
                                     </p>
                                   </div>
                                   <div>
@@ -328,11 +335,37 @@ export default function ProjectTable() {
                                   </div>
                                   <div>
                                     <p className="font-semibold">Created At:</p>
-                                    <p>{selectedProject.createdAt || "N/A"}</p>
+                                    <p>
+                                      {selectedProject.createdAt
+                                        ? new Date(
+                                            selectedProject.createdAt
+                                          ).toLocaleString("en-IN", {
+                                            day: "numeric",
+                                            month: "long",
+                                            year: "numeric",
+                                            hour: "numeric",
+                                            minute: "numeric",
+                                            hour12: true,
+                                          })
+                                        : "N/A"}
+                                    </p>
                                   </div>
                                   <div>
                                     <p className="font-semibold">Updated At:</p>
-                                    <p>{selectedProject.updatedAt || "N/A"}</p>
+                                    <p>
+                                      {selectedProject.updatedAt
+                                        ? new Date(
+                                            selectedProject.updatedAt
+                                          ).toLocaleString("en-IN", {
+                                            day: "numeric",
+                                            month: "long",
+                                            year: "numeric",
+                                            hour: "numeric",
+                                            minute: "numeric",
+                                            hour12: true,
+                                          })
+                                        : "N/A"}
+                                    </p>
                                   </div>
                                 </div>
                               )}

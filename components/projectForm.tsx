@@ -1,4 +1,4 @@
-//@ts-nocheck
+// @ts-nocheck
 "use client";
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
@@ -17,6 +17,7 @@ import {
   districts,
   lacs,
   contractors,
+  fieldGroups,
 } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -396,7 +397,6 @@ const ProjectForm = () => {
       }
     }
   };
-
   const handleEditProject = async (projectId) => {
     try {
       setIsLoading(true);
@@ -409,15 +409,76 @@ const ProjectForm = () => {
         throw new Error(errorData.error || "Failed to fetch project details");
       }
 
-      const projectData = await response.json();
+      // Get the raw response text first to debug it
+      const responseText = await response.text();
+      console.log("Raw API Response:", responseText);
 
-      // Populate form with project data
-      setFormData(projectData);
+      // Parse it manually after seeing the raw data
+      let projectData;
+      try {
+        projectData = JSON.parse(responseText);
+      } catch (e) {
+        throw new Error("Failed to parse project data: " + e.message);
+      }
+
+      console.log("Project data received:", projectData);
+
+      // Check if the data is nested in a 'project' property (common pattern)
+      // or other possible structures based on your API
+      const actualData = projectData.project || projectData.data || projectData;
+
+      console.log("Data being used to fill form:", actualData);
+
+      // Ensure we're mapping all fields correctly from API response
+      const formattedData = {
+        slNo: actualData.slNo || "",
+        projectName: actualData.projectName || "",
+        nodalDepartment: actualData.nodalDepartment || "",
+        division: actualData.division || "",
+        district: actualData.district || "",
+        lac: actualData.lac || "",
+        fundSource: actualData.fundSource || "",
+        aaNo: actualData.aaNo || "",
+        estimatedValue: actualData.estimatedValue || "",
+        pmcWorkOrderDate: actualData.pmcWorkOrderDate
+          ? new Date(actualData.pmcWorkOrderDate).toISOString().split("T")[0]
+          : "",
+        worksWorkOrderDate: actualData.worksWorkOrderDate
+          ? new Date(actualData.worksWorkOrderDate).toISOString().split("T")[0]
+          : "",
+        consultantName: actualData.consultantName || "",
+        contractorName: actualData.contractorName || "",
+        physicalProgress: actualData.physicalProgress || "",
+        financialProgress: actualData.financialProgress || "",
+        completionDatePerTender: actualData.completionDatePerTender
+          ? new Date(actualData.completionDatePerTender)
+              .toISOString()
+              .split("T")[0]
+          : "",
+        expectedCompletionDate: actualData.expectedCompletionDate
+          ? new Date(actualData.expectedCompletionDate)
+              .toISOString()
+              .split("T")[0]
+          : "",
+        provisions: actualData.provisions || "",
+        landStatus: actualData.landStatus || "",
+        remarks: actualData.remarks || "",
+        branch: actualData.branch || "",
+      };
+
+      // Populate form with formatted data
+      setFormData({ ...formattedData }); // Make a fresh copy to ensure state updates
+
+      // Set these flags before the setTimeout
       setIsEditMode(true);
       setCurrentProjectId(projectId);
 
-      // Calculate form completion
-      calculateFormCompletion();
+      // Allow React to update state before calculating completion percentage
+      // Use a slightly longer timeout to ensure state updates are processed
+      setTimeout(() => {
+        console.log("Form data after timeout:", formattedData);
+        calculateFormCompletion();
+      }, 200);
 
       // Set active tab to basic
       setActiveTab("basic");
@@ -425,6 +486,7 @@ const ProjectForm = () => {
       // Scroll to form
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (error) {
+      console.error("Error in handleEditProject:", error);
       setErrorMessage(error.message || "Error fetching project");
     } finally {
       setIsLoading(false);
@@ -589,182 +651,6 @@ const ProjectForm = () => {
     );
   };
 
-  const fieldGroups = [
-    {
-      id: "basic",
-      title: "Basic Information",
-      description: "Enter the fundamental details about the project",
-      fields: [
-        {
-          name: "projectName",
-          label: "Name of Project",
-          type: "text",
-          required: true,
-          help: "Enter the official name of the project as per documents",
-        },
-        {
-          name: "nodalDepartment",
-          label: "Name of Nodal Department",
-          type: "text",
-          required: true,
-          help: "The primary department responsible for this project",
-        },
-        {
-          name: "division",
-          label: "Name of Division",
-          type: "text",
-          required: true,
-          help: "Administrative division managing the project",
-        },
-        {
-          name: "district",
-          label: "Name of District",
-          type: "text",
-          required: true,
-          help: "District where the project is located",
-        },
-        {
-          name: "lac",
-          label: "Name of LAC",
-          type: "text",
-          required: false,
-          help: "Legislative Assembly Constituency",
-        },
-        {
-          name: "branch",
-          label: "Branch",
-          type: "text",
-          required: false,
-          help: "Branch office responsible (if applicable)",
-        },
-      ],
-    },
-    {
-      id: "financial",
-      title: "Financial Details",
-      description: "Enter financial information about the project",
-      fields: [
-        {
-          name: "fundSource",
-          label: "Source of Fund",
-          type: "text",
-          required: true,
-          help: "Funding source or scheme name",
-        },
-        {
-          name: "aaNo",
-          label: "AA No.",
-          type: "text",
-          required: true,
-          help: "Administrative Approval Number",
-        },
-        {
-          name: "estimatedValue",
-          label: "Estimated Value in Cr.",
-          type: "number",
-          step: "0.01",
-          required: true,
-          help: "Total project value in Crores",
-        },
-        {
-          name: "financialProgress",
-          label: "Financial Progress in Percentage",
-          type: "number",
-          min: "0",
-          max: "100",
-          required: false,
-          help: "Current financial utilization as percentage",
-        },
-      ],
-    },
-    {
-      id: "execution",
-      title: "Execution Details",
-      description: "Enter details about project execution and contractors",
-      fields: [
-        {
-          name: "pmcWorkOrderDate",
-          label: "Work Order Date (PMC / Consultancy)",
-          type: "date",
-          required: false,
-          help: "Date when PMC work order was issued",
-        },
-        {
-          name: "worksWorkOrderDate",
-          label: "Work Order Date (works)",
-          type: "date",
-          required: true,
-          help: "Date when main works order was issued",
-        },
-        {
-          name: "consultantName",
-          label: "Name of Consultant/ PMC",
-          type: "text",
-          required: false,
-          help: "Name of the project management consultant",
-        },
-        {
-          name: "contractorName",
-          label: "Name of Contractor",
-          type: "text",
-          required: true,
-          help: "Name of the primary contractor",
-        },
-        {
-          name: "physicalProgress",
-          label: "Physical Progress in Percentage",
-          type: "number",
-          min: "0",
-          max: "100",
-          required: false,
-          help: "Current physical progress as percentage",
-        },
-      ],
-    },
-    {
-      id: "timeline",
-      title: "Timeline & Status",
-      description: "Enter project timeline and current status information",
-      fields: [
-        {
-          name: "completionDatePerTender",
-          label: "Date of Completion as per Tender",
-          type: "date",
-          required: true,
-          help: "Contract completion date as per tender agreement",
-        },
-        {
-          name: "expectedCompletionDate",
-          label: "Expected Date of Completion",
-          type: "date",
-          required: false,
-          help: "Realistic expected date of completion",
-        },
-        {
-          name: "provisions",
-          label: "Provisions",
-          type: "text",
-          required: false,
-          help: "Any special provisions for this project",
-        },
-        {
-          name: "landStatus",
-          label: "Land Status",
-          type: "text",
-          required: false,
-          help: "Current status of land acquisition (if applicable)",
-        },
-        {
-          name: "remarks",
-          label: "Remarks",
-          type: "textarea",
-          required: false,
-          help: "Any additional notes or observations",
-        },
-      ],
-    },
-  ];
-
   // Format a field value for display
   const formatValue = (name, value) => {
     if (!value) return "-";
@@ -812,7 +698,7 @@ const ProjectForm = () => {
       });
       if (req.ok) {
         alert("Logout Successful");
-        window.location.reload()
+        window.location.reload();
       }
     } catch (error: unknown) {
       if (error instanceof Error) {
