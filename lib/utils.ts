@@ -523,9 +523,9 @@ export const fieldGroups = [
 
 export const divisions = [
   "Dispur, Dimoria & Estate Office Territorial Building Division",
-  "Haflongnj District Territorial Building Division",
+  "Karimganj District Territorial Building Division",
   "Hailakandi District Territorial Building Division",
-  "Udharbond, Lakhipur, Barkhola & Katigora Territorial Building Division",
+  "Lakhipur, Barkhola & Katigora Territorial Building Division",
   "Baithalangso Territorial Building Division",
   "Udalguri District & Baksa District Territorial Building Division",
   "Bongaigaon District Territorial Building Division",
@@ -560,7 +560,7 @@ export const divisions = [
   "Diphu Elect. Division",
   "Sonitpur District Territorial Building Division",
   "Lakhimpur District Territorial Building Division",
-  "Silchar, Sonai & Dholai Territorial Building Division",
+  "Silchar, Udharbond, Sonai & Dholai(SC) Territorial Building Division",
   "Jorhat District Territorial Building Division",
   "Sivasagar District Territorial Building Division",
   "Dibrugarh, Chabua-Lahowal, Khowang & Tingkhong Territorial Building Division",
