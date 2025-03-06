@@ -523,6 +523,20 @@ export const fieldGroups = [
 ];
 
 export const divisions = [
+  "Guwahati Building Circle-I, Fancy Bazar, Guwahati-781001",
+  "Guwahati Building Circle-II, Chandmari, Guwahati-3",
+  "Guwahati Elect. Circle, Fancy Bazar, Guwahati-781001",
+  "Kokrajhar Building Circle, Kokrajhar, Depot Road, 783370",
+  "Tezpur Building Circle, Rabar Bazar, Sonitpur",
+  "Silchar Building Circle, Silchar",
+  "Jorhat Building Circle, KKB Road, Jorhat",
+  "Goalpara Building Circle, Goalpara",
+  "Lakhimpur Building Circle, North Lakhimpur-787001, Gandhi Marg",
+  "Nalbari Building Circle, Gopal Bazar, Nalbari-781353",
+  "Nagaon Building Circle, Nagaon",
+  "Sivasagar Building Circle, Sivasagar-785640",
+  "Dibrugarh Building Circle, Dibrugarh-786001",
+  "Diphu Building Circle, Diphu-782460, Karbi Anglong",
   "Dispur, Dimoria & Estate Office Territorial Building Division",
   "Haflongnj District Territorial Building Division",
   "Hailakandi District Territorial Building Division",
