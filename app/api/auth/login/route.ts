@@ -10,8 +10,6 @@ interface LoginRequest {
 }
 
 export async function POST(request: NextRequest) {
-
-
   try {
     const body: LoginRequest = await request.json();
     const { email, password } = body;
@@ -46,8 +44,23 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Get current time in IST
+    const istTime = new Date().toLocaleString("en-US", {
+      timeZone: "Asia/Kolkata",
+      dateStyle: "full",
+      timeStyle: "long",
+    });
+
+    // Update user with last login time
+    const updatedUser = await prisma.user.update({
+      where: { email },
+      data: {
+        lastLogin: istTime,
+      },
+    });
+
     // Generate token
-    const token = generateToken(user);
+    const token = generateToken(updatedUser);
 
     // Set cookie
     cookies().set({
@@ -61,10 +74,11 @@ export async function POST(request: NextRequest) {
 
     // Return user data (without password)
     return NextResponse.json({
-      id: user.id,
-      email: user.email,
-      name: user.name,
-      createdAt: user.createdAt,
+      id: updatedUser.id,
+      email: updatedUser.email,
+      name: updatedUser.name,
+      createdAt: updatedUser.createdAt,
+      lastLogin: updatedUser.lastLogin,
     });
   } catch (error) {
     console.error("Login error:", error);
